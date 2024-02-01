@@ -11,7 +11,9 @@ jobs:
       run: |
         set PATH=C:\Miniconda3;C:\Miniconda3\Scripts;%USERPROFILE%\Miniconda3;%USERPROFILE%\Miniconda3\Scripts;%PATH%
         call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-        where msbuild || echo "msbuild not found"
+        where nuget || echo nuget not found
+        where msbuild || echo msbuild not found
+        nuget restore src\Carnac.sln
         msbuild src\Carnac.sln /p:Configuration=Release /p:Platform="Any CPU"
     - name: test
       shell: cmd
