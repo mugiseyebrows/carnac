@@ -1,13 +1,15 @@
 
 def main
     github_checkout()
-    use(conda)
-    install(mugicli)
+    dotnet new tool-manifest
+    dotnet tool install Cake.Tool --version 4.0.0
     
 def build shell pwsh
     ./build.ps1
 
 def test
+    use(conda)
+    install(mugicli)
     pyfind
 
 order main build test

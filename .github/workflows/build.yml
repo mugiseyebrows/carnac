@@ -10,7 +10,8 @@ jobs:
       shell: cmd
       run: |
         set PATH=C:\Miniconda3;C:\Miniconda3\Scripts;%USERPROFILE%\Miniconda3;%USERPROFILE%\Miniconda3\Scripts;%PATH%
-        where pyfind || pip install mugicli
+        dotnet new tool-manifest
+        dotnet tool install Cake.Tool --version 4.0.0
     - name: build
       shell: pwsh
       run: ./build.ps1
@@ -18,4 +19,5 @@ jobs:
       shell: cmd
       run: |
         set PATH=C:\Miniconda3;C:\Miniconda3\Scripts;%USERPROFILE%\Miniconda3;%USERPROFILE%\Miniconda3\Scripts;%PATH%
+        where pyfind || pip install mugicli
         pyfind
