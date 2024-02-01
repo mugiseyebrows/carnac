@@ -40,8 +40,8 @@ Setup(context =>
 		BuildSystem.AppVeyor.UpdateBuildVersion(nugetVersion);
 	}
 
-	Information($"Building {githubRepo} v{nugetVersion}");
-	Information($"Informational version {gitVersionInfo.InformationalVersion}");
+	Information("Building " + githubRepo + "v" + nugetVersion);
+	Information("Informational version " + gitVersionInfo.InformationalVersion);
 });
 
 Task("Clean")
@@ -73,7 +73,7 @@ Task("Run-Unit-Tests")
     .IsDependentOn("Build")
     .Does(() =>
     {
-        XUnit($"./src/Carnac.Tests/bin/{configuration}/*.Tests.dll");
+        XUnit("./src/Carnac.Tests/bin/" + configuration + "/*.Tests.dll");
     });
 
 Task("Package-Squirrel")
@@ -87,18 +87,18 @@ Task("Package-Squirrel")
 
 		// Create nuget package
 		var appFiles = GetFiles(buildDir.Path + "/**/*.*").Select(f => f.FullPath);
-		var deltaCompressionFiles = GetFiles($"{(toolsDir + Directory("DeltaCompressionDotNet/lib/net45")).Path}/*.dll").Select(f => f.FullPath);
+		/*var deltaCompressionFiles = GetFiles($"{(toolsDir + Directory("DeltaCompressionDotNet/lib/net45")).Path}/*.dll").Select(f => f.FullPath);
 		var monoCecilFiles = GetFiles($"{(toolsDir + Directory("Mono.Cecil/lib/net45")).Path}/*.dll").Select(f => f.FullPath);
 		var splatFiles = GetFiles($"{(toolsDir + Directory("Splat/lib/Net45")).Path}/*.dll").Select(f => f.FullPath);
 		var iCSharpCodeFiles = GetFiles($"{(toolsDir + Directory("squirrel.windows/lib/Net45")).Path}/ICSharpCode.SharpZipLib.*").Select(f => f.FullPath);
 		var squirrelFiles = GetFiles($"{(toolsDir + Directory("squirrel.windows/lib/Net45")).Path}/*Squirrel.dll").Select(f => f.FullPath);
-		var releaseFiles = new HashSet<string>(
+		*/var releaseFiles = new HashSet<string>(
 			appFiles
-				.Concat(deltaCompressionFiles)
+				/*.Concat(deltaCompressionFiles)
 				.Concat(monoCecilFiles)
 				.Concat(splatFiles)
 				.Concat(iCSharpCodeFiles)
-				.Concat(squirrelFiles)
+				.Concat(squirrelFiles)*/
 		);
 		releaseFiles.RemoveWhere(f => f.Contains(".vshost.") || f.EndsWith(".pdb"));
 
@@ -114,11 +114,13 @@ Task("Package-Squirrel")
 		
 		// Sync latest release to build new package
 		var squirrelSyncReleasesExe = syncReleasesDir + File("SyncReleases.exe");
-		StartProcess(squirrelSyncReleasesExe, new ProcessSettings { Arguments = $"--url {githubRepoUrl} --releaseDir {squirrelReleaseDir.Path}{(!string.IsNullOrEmpty(githubAuthToken) ? " --token " + githubAuthToken : "")}" });
+		StartProcess(squirrelSyncReleasesExe, new ProcessSettings { 
+			Arguments = "--url " + githubRepoUrl + " --releaseDir " + squirrelReleaseDir.Path + (!string.IsNullOrEmpty(githubAuthToken) ? " --token " + githubAuthToken : "")
+			});
 
 		// Create new squirrel package
 		Squirrel(
-			squirrelDeployDir + File($"carnac.{nugetVersion}.nupkg"), 
+			squirrelDeployDir + File("carnac." + nugetVersion + ".nupkg"), 
 			new SquirrelSettings
 			{
 				ReleaseDirectory = squirrelReleaseDir,
@@ -135,18 +137,18 @@ Task("Package-Zip")
 	.IsDependentOn("Package-Squirrel")
 	.Does(() =>
 	{
-		var zipFile = gitHubDeployDir + File($"carnac.{nugetVersion}.zip");
+		var zipFile = gitHubDeployDir + File("carnac." + nugetVersion + ".zip");
 
 		EnsureDirectoryExists(deployDir);
 		EnsureDirectoryExists(gitHubDeployDir);
 
-		var files = GetFiles($"{squirrelReleaseDir.Path}\\carnac-{nugetVersion}-*.nupkg")
+		var files = GetFiles(squirrelReleaseDir.Path + "\\carnac-{nugetVersion}-*.nupkg")
 			.Select(f => f.FullPath)
 			.Concat(
 				new []
 				{
-					$"{squirrelReleaseDir.Path}\\RELEASES",
-					$"{squirrelReleaseDir.Path}\\Setup.exe"
+					squirrelReleaseDir.Path + "\\RELEASES",
+					squirrelReleaseDir.Path + "\\Setup.exe"
 				}
 			);
 		
@@ -167,10 +169,10 @@ Task("Package-Choco")
 		EnsureDirectoryExists(deployDir);
 		EnsureDirectoryExists(chocoDeployDir);
 
-		var url = $"{githubRepoUrl}/releases/download/{nugetVersion}";
+		var url = githubRepoUrl + "/releases/download/" + nugetVersion;
 
-		ReplaceRegexInFiles(chocoInstallFile, @"\$url = '.+'", $"$url = '{url}/carnac.{nugetVersion}.zip'");
-		ReplaceRegexInFiles(chocoInstallFile, @"\$zipFileHash = '.+'", $"$zipFileHash = '{zipFileHash}'");
+		/*ReplaceRegexInFiles(chocoInstallFile, @"\$url = '.+'", $"$url = '{url}/carnac.{nugetVersion}.zip'");
+		ReplaceRegexInFiles(chocoInstallFile, @"\$zipFileHash = '.+'", $"$zipFileHash = '{zipFileHash}'");*/
 
 		ChocolateyPack(chocoSpecPath, new ChocolateyPackSettings
 		{
@@ -195,16 +197,16 @@ Task("Create-Checksums-File")
         var checksumDir = deployDir + Directory("Checksums");
         EnsureDirectoryExists(checksumDir);
 
-        var files = GetFiles($"{squirrelReleaseDir.Path}\\*")
-            .Concat(GetFiles($"{gitHubDeployDir.Path}\\*"));
+        var files = GetFiles(squirrelReleaseDir.Path + "\\*")
+            .Concat(GetFiles(gitHubDeployDir.Path + "\\*"));
 
-        var checksumFile = checksumDir + File($"sha256sums.txt");
+        var checksumFile = checksumDir + File("sha256sums.txt");
         var sha256sums = new List<string>();
         foreach(var file in files)
         {
             var fileName = file.GetFilename();
             var fileHash = CalculateFileHash(file, HashAlgorithm.SHA256).ToHex();
-            sha256sums.Add($"{fileHash} {fileName}");
+            sha256sums.Add(fileHash + " " + fileName);
         }
         FileAppendLines(checksumFile, sha256sums.ToArray());
     });
