@@ -45,7 +45,6 @@ Setup(context =>
 });
 
 Task("Restore-NuGet-Packages")
-    .IsDependentOn("Clean")
     .Does(() =>
     {
         NuGetRestore(solutionFile);
