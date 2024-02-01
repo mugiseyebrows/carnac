@@ -1,0 +1,21 @@
+name: main
+on: push
+jobs:
+  main:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v3
+      name: checkout
+    - name: main
+      shell: cmd
+      run: |
+        set PATH=C:\Miniconda3;C:\Miniconda3\Scripts;%USERPROFILE%\Miniconda3;%USERPROFILE%\Miniconda3\Scripts;%PATH%
+        where pyfind || pip install mugicli
+    - name: build
+      shell: pwsh
+      run: ./build.ps1
+    - name: test
+      shell: cmd
+      run: |
+        set PATH=C:\Miniconda3;C:\Miniconda3\Scripts;%USERPROFILE%\Miniconda3;%USERPROFILE%\Miniconda3\Scripts;%PATH%
+        pyfind

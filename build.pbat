@@ -1,0 +1,15 @@
+
+def main
+    github_checkout()
+    use(conda)
+    install(mugicli)
+    
+def build shell pwsh
+    ./build.ps1
+
+def test
+    pyfind
+
+order main build test
+
+github-workflow 1
