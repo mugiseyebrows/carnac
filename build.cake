@@ -9,10 +9,10 @@ using Newtonsoft.Json;
 
 var target = Argument("target", "Default");
 var configuration = Argument("configuration", "Debug");
-var githubRepo = Argument("githubrepo", "Code52/carnac");
+var githubRepo = Argument("githubrepo", "mugiseyebrows/carnac");
 var githubAuthToken = Argument("authtoken", "");
 
-var githubRepoUrl = $"https://github.com/{githubRepo}";
+var githubRepoUrl = "https://github.com/mugiseyebrows/carnac";
 var solutionFile = "./src/Carnac.sln";
 var buildDir = Directory("./src/Carnac/bin") + Directory(configuration);
 var toolsDir = Directory("./tools");
