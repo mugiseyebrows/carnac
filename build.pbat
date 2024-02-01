@@ -6,7 +6,7 @@ def main
     msbuild src\Carnac.sln /p:Configuration=Release /p:Platform="Any CPU"
     copy_tree(src\Carnac\bin\Release, Carnac)
     zip(Carnac, Carnac.zip)
-    github_upload(Carnac)
+    github_upload(Carnac.zip)
     github_release(Carnac.zip)
 
 github-workflow 1
