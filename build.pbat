@@ -1,17 +1,12 @@
 
 def main
     github_checkout()
-    dotnet new tool-manifest
-    dotnet tool install Cake.Tool --version 4.0.0
-    
-def build shell pwsh
-    ./build.ps1
-
-def test
-    use(conda)
-    install(mugicli)
-    pyfind
-
-order main build test
+    call_vcvars()
+    nuget restore src\Carnac.sln
+    msbuild src\Carnac.sln /p:Configuration=Release /p:Platform="Any CPU"
+    copy_tree(src\Carnac\bin\Release, Carnac)
+    zip(Carnac, Carnac.zip)
+    github_upload(Carnac)
+    github_release(Carnac.zip)
 
 github-workflow 1
