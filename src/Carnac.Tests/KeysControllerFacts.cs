@@ -125,8 +125,9 @@ namespace Carnac.Tests
         {
             get
             {
-                return new KeyPress(new ProcessInfo("foo"),
-                    new InterceptKeyEventArgs(Keys.A, KeyDirection.Down, false, false, false), false, new[] { "a" });
+                return new KeyPress(
+                    new ProcessInfo("foo"),
+                    new InterceptKeyEventArgs(Keys.A, KeyDirection.Down, false, false, false), IntPtr.Zero, false, new[] { "a" });
             }
         }
 
@@ -135,7 +136,7 @@ namespace Carnac.Tests
             get
             {
                 return new KeyPress(new ProcessInfo("foo"),
-                    new InterceptKeyEventArgs(Keys.Down, KeyDirection.Down, false, false, false), false, new[] { "Down" });
+                    new InterceptKeyEventArgs(Keys.Down, KeyDirection.Down, false, false, false), IntPtr.Zero, false, new[] { "Down" });
             }
         }
 

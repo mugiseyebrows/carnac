@@ -60,7 +60,7 @@ namespace Carnac.Tests
             var keySequence = KeyStreams.CtrlShiftL().ToObservable();
             var sut = CreateMessageProvider(keySequence);
             shortcutProvider.GetShortcutsStartingWith(Arg.Any<KeyPress>())
-                .Returns(new List<KeyShortcut> { new KeyShortcut("MyShortcut", new KeyPressDefinition(Keys.L, shiftPressed: true, controlPressed: true)) });
+                .Returns(new List<KeyShortcut> { new KeyShortcut("MyShortcut", new KeyPressDefinition(Keys.L, IntPtr.Zero, shiftPressed: true, controlPressed: true)) });
 
             // act
             var messages = await sut.GetMessageStream().ToList();
@@ -78,8 +78,8 @@ namespace Carnac.Tests
             var sut = CreateMessageProvider(keySequence);
             shortcutProvider.GetShortcutsStartingWith(Arg.Any<KeyPress>())
                 .Returns(new List<KeyShortcut> { new KeyShortcut("SomeShortcut",
-                    new KeyPressDefinition(Keys.U, controlPressed: true),
-                    new KeyPressDefinition(Keys.L)) });
+                    new KeyPressDefinition(Keys.U, IntPtr.Zero, controlPressed: true),
+                    new KeyPressDefinition(Keys.L, IntPtr.Zero)) });
 
             // act
             var messages = await sut.GetMessageStream().ToList();
@@ -98,8 +98,8 @@ namespace Carnac.Tests
             var sut = CreateMessageProvider(keySequence);
             shortcutProvider.GetShortcutsStartingWith(Arg.Any<KeyPress>())
                 .Returns(new List<KeyShortcut> { new KeyShortcut("SomeShortcut",
-                    new KeyPressDefinition(Keys.U, controlPressed: true),
-                    new KeyPressDefinition(Keys.L)) });
+                    new KeyPressDefinition(Keys.U, IntPtr.Zero, controlPressed: true),
+                    new KeyPressDefinition(Keys.L, IntPtr.Zero)) });
 
             // act
             var messages = await sut.GetMessageStream().ToList();
@@ -120,8 +120,8 @@ namespace Carnac.Tests
             var sut = CreateMessageProvider(keySequence);
             shortcutProvider.GetShortcutsStartingWith(Arg.Any<KeyPress>())
                 .Returns(new List<KeyShortcut> { new KeyShortcut("SomeShortcut",
-                    new KeyPressDefinition(Keys.U, controlPressed: true),
-                    new KeyPressDefinition(Keys.L)) });
+                    new KeyPressDefinition(Keys.U, IntPtr.Zero, controlPressed: true),
+                    new KeyPressDefinition(Keys.L, IntPtr.Zero)) });
 
             // act
             var messages = await sut.GetMessageStream().ToList();
@@ -144,8 +144,8 @@ namespace Carnac.Tests
             shortcutProvider
                 .GetShortcutsStartingWith(Arg.Any<KeyPress>())
                 .Returns(new List<KeyShortcut> { new KeyShortcut("SomeShortcut",
-                    new KeyPressDefinition(Keys.U, controlPressed: true),
-                    new KeyPressDefinition(Keys.L)) });
+                    new KeyPressDefinition(Keys.U, IntPtr.Zero, controlPressed: true),
+                    new KeyPressDefinition(Keys.L, IntPtr.Zero)) });
 
             // act
             var messages = await sut.GetMessageStream().ToList();
